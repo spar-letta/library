@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd">
+
+    <changeSet id="20240927 15:24" author="enock">
+        <sql>
+            CREATE SCHEMA IF NOT EXISTS library;
+        </sql>
+    </changeSet>
+
+    <changeSet id="202409271502" author="enock">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="books" schemaName="library"/>
+            </not>
+        </preConditions>
+        <createTable tableName="books" schemaName="library">
+            <column name="book_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="public_id" type="uuid"/>
+            <column name="date_created" type="timestamp"/>
+            <column name="date_modified" type="timestamp"/>
+            <column name="modified_by" type="varchar(250)"/>
+            <column name="created_by_id" type="BIGINT"/>
+            <column name="deleted" type="boolean" defaultValueBoolean="false"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(500)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="date_published" type="date"/>
+            <column name="price" type="numeric(4,2)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="created_by_id" baseTableName="books"
+                                 baseTableSchemaName="library" constraintName="created_by_id_table_tb_books"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users"
+                                 referencedTableSchemaName="public"/>
+    </changeSet>
+
+<!--    <changeSet id="202409271800" author="enock">-->
+<!--        <preConditions>-->
+<!--            <not>-->
+<!--                <columnExists tableName="books" columnName="author_id" schemaName="library"/>-->
+<!--            </not>-->
+<!--        </preConditions>-->
+<!--        <addColumn tableName="books" schemaName="library">-->
+<!--            <column name="author_id" type="bigint"/>-->
+<!--        </addColumn>-->
+<!--        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="books"-->
+<!--                                 baseTableSchemaName="library" constraintName="author_id_table_books"-->
+<!--                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"-->
+<!--                                 referencedColumnNames="id" referencedTableName="users"-->
+<!--                                 referencedTableSchemaName="system_users"/>-->
+<!--    </changeSet>-->
+
+    <changeSet id="202409271535" author="enock">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="book_author" schemaName="library"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="library" tableName="book_author">
+            <column name="book_id" type="bigint"/>
+            <column name="user_id" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="book_id" baseTableName="book_author"
+                                 baseTableSchemaName="library"
+                                 constraintName="fk_book_id_table_book_author"
+                                 deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="book_id" referencedTableName="books"
+                                 referencedTableSchemaName="library"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="book_author"
+                                 baseTableSchemaName="library"
+                                 constraintName="fk_user_id_table_book_author"
+                                 deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users"
+                                 referencedTableSchemaName="public"/>
+
+        <addUniqueConstraint tableName="book_author"
+                             columnNames="book_id, user_id"
+                             schemaName="library"
+                             constraintName="unique_book_id_table_book_author"/>
+    </changeSet>
+
+    <changeSet id="20240927 10:49" author="enock">
+        <preConditions>
+            <columnExists schemaName="library" tableName="books" columnName="price"/>
+        </preConditions>
+        <modifyDataType schemaName="library" tableName="books" columnName="price"
+                        newDataType="numeric(11,2)"/>
+    </changeSet>
+
+</databaseChangeLog>
