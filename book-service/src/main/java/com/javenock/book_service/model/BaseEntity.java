@@ -11,6 +11,8 @@ import com.javenock.book_service.views.BaseView;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -29,7 +31,8 @@ public abstract class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "public_id")
+    @Column(name = "public_id", columnDefinition = "VARCHAR(36)")
+    @JdbcTypeCode(SqlTypes.CHAR)
     @JsonView({BaseView.BookView.class})
     private UUID publicId;
 

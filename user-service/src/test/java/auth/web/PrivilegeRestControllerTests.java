@@ -10,23 +10,21 @@ public class PrivilegeRestControllerTests extends AuthApplicationTests {
 
     @Test
     public void testCreatePrivilege() {
-        PrivilegeDto privilegeDto = new PrivilegeDto();
-        privilegeDto.setName("READ_PRIVILEGE");
+        PrivilegeDto privilegeDto = new PrivilegeDto("READ_PRIVILEGE");
         String token = getToken();
-
 
         given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
-                .body(privilegeDto)
-                .post("/auth/privileges")
+                .body(privilegeDto).log().all()
+                .post("/privileges")
                 .then().log().all()
                 .statusCode(200);
 
         given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
-                .get("/auth/privileges")
+                .get("/privileges")
                 .then().log().all()
                 .statusCode(200);
     }
@@ -36,7 +34,7 @@ public class PrivilegeRestControllerTests extends AuthApplicationTests {
         String token = getToken();
         given()
                 .header("Authorization", "Bearer " + token)
-                .get("/auth/privileges")
+                .get("/privileges")
                 .then().log().all()
                 .statusCode(200);
     }

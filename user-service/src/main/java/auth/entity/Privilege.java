@@ -1,6 +1,7 @@
 package auth.entity;
 
 import auth.utils.views.BaseView;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "privileges", schema = "public")
+@ToString
+@Table(name = "privileges", schema = "library")
 public class Privilege extends AbstractAuditableEntity {
 
     @Id
@@ -26,5 +28,6 @@ public class Privilege extends AbstractAuditableEntity {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private Role role;
 }

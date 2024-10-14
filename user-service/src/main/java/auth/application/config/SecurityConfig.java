@@ -69,10 +69,10 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
-    @Value("${application.url}")
+    @Value("http://localhost:8081")
     private String applicationUrl;
 
-    @Value("${server.servlet.context-path}")
+    @Value("/")
     private String contextPath;
 
     private final UserDetailService userDetailService;
@@ -140,7 +140,7 @@ public class SecurityConfig {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
-                .issuer(applicationUrl + contextPath)
+                .issuer(applicationUrl)
                 .build();
     }
 
@@ -164,10 +164,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/swagger-ui/**", "/v3/api-docs**", "/api-docs/**", "/api-docs-ui.html",
-                        "/.well-known/**", "/state/health", "/state/info", "/profile/**","/roles/**","/privileges/**")
+                        "/.well-known/**", "/state/health", "/state/info", "/profile/**","/roles/**","/privileges/**","/user-management-service/v3/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
+                                .requestMatchers(antMatcher("/user-management-service/v3/**")).permitAll()
                                 .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                                 .requestMatchers(antMatcher("/v3/api-docs**")).permitAll()
                                 .requestMatchers(antMatcher("/api-docs/**")).permitAll()

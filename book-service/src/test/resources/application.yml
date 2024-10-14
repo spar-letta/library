@@ -22,7 +22,7 @@ spring:
 
   batch:
     job:
-      enabled: false
+      enabled: true
 
   liquibase:
     change-log: 'classpath:/test-liquibase.change-log.xml'

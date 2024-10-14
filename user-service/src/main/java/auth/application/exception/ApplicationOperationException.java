@@ -4,11 +4,6 @@ import auth.application.exception.handler.Translator;
 
 import java.util.List;
 
-/**
- * Custom Exception Class
- *
- * @author franc
- */
 public class ApplicationOperationException extends IllegalArgumentException {
 
     private List<String> errors;

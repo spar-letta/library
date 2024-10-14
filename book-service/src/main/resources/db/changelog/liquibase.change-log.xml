@@ -40,7 +40,7 @@
                                  baseTableSchemaName="library" constraintName="created_by_id_table_tb_books"
                                  deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="users"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
 <!--    <changeSet id="202409271800" author="enock">-->
@@ -82,7 +82,7 @@
                                  deferrable="false"
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="users"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableSchemaName="library"/>
 
         <addUniqueConstraint tableName="book_author"
                              columnNames="book_id, user_id"

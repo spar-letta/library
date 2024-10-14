@@ -1,8 +1,9 @@
-package auth.entity;
+package auth.service;
 
 import auth.dto.request.PrivilegeDto;
+import auth.entity.Privilege;
 import auth.repository.PrivilegeRepository;
-import auth.service.PrivilegeService;
+import auth.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     private static final Logger log = LoggerFactory.getLogger(PrivilegeServiceImpl.class);
     private final PrivilegeRepository privilegeRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     public Privilege createPrivilege(PrivilegeDto privilegeDto) {
@@ -33,12 +35,8 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public List<Privilege> fetchAllPrivileges() {
+    public Page<Privilege> fetchAllPrivileges(Pageable pageable) {
         List<Privilege> all = privilegeRepository.findAllPrivileges();
-        all.forEach(item ->{
-            log.info("=========data {}", item.getName());
-        });
-
-        return all;
+        return new PageImpl<>(all, pageable, all.size());
     }
 }

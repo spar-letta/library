@@ -10,7 +10,7 @@
 
     <changeSet id="202409271524" author="enock">
         <sql>
-            CREATE SCHEMA IF NOT EXISTS public;
+            CREATE SCHEMA IF NOT EXISTS library;
         </sql>
     </changeSet>
 
@@ -18,10 +18,10 @@
     <changeSet id="2024-07-28 14:54" author="enock">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="users" schemaName="public"/>
+                <tableExists tableName="users" schemaName="library"/>
             </not>
         </preConditions>
-        <createTable tableName="users" schemaName="public">
+        <createTable tableName="users" schemaName="library">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -50,10 +50,10 @@
     <changeSet id="20240728 14:57" author="enock">
         <preConditions>
             <not>
-                <tableExists tableName="roles" schemaName="public"/>
+                <tableExists tableName="roles" schemaName="library"/>
             </not>
         </preConditions>
-        <createTable tableName="roles" schemaName="public">
+        <createTable tableName="roles" schemaName="library">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -71,10 +71,10 @@
     <changeSet author="enock" id="20240728 15:00">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists schemaName="public" tableName="user_roles"/>
+                <tableExists schemaName="library" tableName="user_roles"/>
             </not>
         </preConditions>
-        <createTable schemaName="public" tableName="user_roles">
+        <createTable schemaName="library" tableName="user_roles">
             <column name="user_id_fk" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -83,25 +83,25 @@
             </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="user_id_fk" baseTableName="user_roles"
-                                 baseTableSchemaName="public" constraintName="user_id_fk_table_user_roles"
+                                 baseTableSchemaName="library" constraintName="user_id_fk_table_user_roles"
                                  deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="users"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableSchemaName="library"/>
         <addForeignKeyConstraint baseColumnNames="role_id_fk" baseTableName="user_roles"
-                                 baseTableSchemaName="public" constraintName="role_id_fk_table_user_roles"
+                                 baseTableSchemaName="library" constraintName="role_id_fk_table_user_roles"
                                  deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="roles"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableSchemaName="library"/>
 
     </changeSet>
 
     <changeSet id="20240729 17:07" author="enock">
         <preConditions>
             <not>
-                <tableExists tableName="privileges" schemaName="public"/>
+                <tableExists tableName="privileges" schemaName="library"/>
             </not>
         </preConditions>
-        <createTable tableName="privileges" schemaName="public">
+        <createTable tableName="privileges" schemaName="library">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
@@ -115,10 +115,31 @@
             <column name="role_id" type="bigint"/>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="privileges"
-                                 baseTableSchemaName="public" constraintName="role_id_table_privileges"
+                                 baseTableSchemaName="library" constraintName="role_id_table_privileges"
                                  deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="roles"
-                                 referencedTableSchemaName="public"/>
+                                 referencedTableSchemaName="library"/>
+    </changeSet>
+
+    <changeSet author="enock" id="202410091601-14">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="library" tableName="role_privileges"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="library" tableName="role_privileges">
+            <column name="role_id_fk" type="BIGINT"/>
+            <column name="privilege_id_fk" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="library" baseTableName="role_privileges" baseColumnNames="role_id_fk"
+                                 constraintName="role_id_fk_table_role_privileges"
+                                 referencedTableName="roles" referencedColumnNames="id"
+                                 referencedTableSchemaName="library"/>
+        <addForeignKeyConstraint baseTableSchemaName="library" baseTableName="role_privileges"
+                                 baseColumnNames="privilege_id_fk"
+                                 constraintName="privilege_id_fk_table_role_privileges"
+                                 referencedTableName="privileges" referencedColumnNames="id"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
 </databaseChangeLog>

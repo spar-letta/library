@@ -1,46 +1,32 @@
 server:
-  port: 8081
+  port: 8082
 
 spring:
   application:
     name: book-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/library-management-db
+    url: jdbc:mysql://mysql-db:3306/library?createDatabaseIfNotExist=true
     username: root
     password: 19pool90
 
   jpa:
-      database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+    properties:
       hibernate:
-        ddl-auto: none
-
-#  cloud: #https://cloud.spring.io/spring-cloud-stream-binder-rabbit/multi/multi__retry_with_the_rabbitmq_binder.html , https://docs.spring.io/spring-cloud-stream-binder-rabbit/docs/3.1.3/reference/html/spring-cloud-stream-binder-rabbit.html#_rabbitmq_consumer_properties
-#    stream:
-#      bindings:
-#        post-creation-events:
-#          binder: rabbit
-#          content-type: application/json
-#          destination: post.creation.events
-#          durable-subscription: true
+        type:
+          preferred_uuid_jdbc_type: CHAR
 
   liquibase:
-    change-log: 'classpath:/db/changelog/liquibase.change-log.xml'
+    change-log: classpath:/db/changelog/liquibase.change-log.xml
 
-#  hystrix:
-#    command:
-#      default:
-#        execution:
-#          timeout:
-#            enabled: false
-#          isolation:
-#            thread:
-#              timeoutInMilliseconds: 10000
-
-#  eureka:
-#    client:
-#      register-with-eureka: true
-#      fetch-registry: true
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: 'false'
 
   logging:
     level:
@@ -48,3 +34,26 @@ spring:
       com.example.demo_resource_server: DEBUG
       org.springframework.jdbc: DEBUG
       org.springframework.security: trace
+
+openapi:
+  service:
+    title: book-service doc
+    version: 1.0.0
+    url: http://localhost:8080
+
+springdoc:
+  api-docs:
+    path: /book-service/v3/api-docs
+  swagger-ui:
+    path: /book-service/swagger-ui.html
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+  instance:
+    hostname: book-service
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true

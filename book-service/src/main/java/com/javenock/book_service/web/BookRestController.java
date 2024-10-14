@@ -20,6 +20,7 @@ import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ import java.util.UUID;
 public class BookRestController {
     private final BookService bookService;
 
+    @PreAuthorize("hasAuthority('CREATE_BOOK')")
     @PostMapping
     @JsonView({BaseView.BookView.class})
     @Operation(summary = "Create Book", responses = {
@@ -40,6 +42,7 @@ public class BookRestController {
         return bookService.createBook(bookRequestDto);
     }
 
+    @PreAuthorize("hasAuthority('READ_BOOKS')")
     @GetMapping
     @Operation(summary = "Create Book", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(example = Examples.GET_BOOKS_OK_RESPONSE)))})

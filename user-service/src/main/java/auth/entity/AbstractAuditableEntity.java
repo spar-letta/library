@@ -7,15 +7,19 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -33,7 +37,8 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "public_id", updatable = false)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(name = "public_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")  //BaseView.privilegeView.class
     @JsonView({BaseView.BaseEntityListView.class, BaseView.ProfileView.class, BaseView.RoleView.class, BaseView.privilegeView.class, BaseView.internalView.class})
     private UUID publicId;
 

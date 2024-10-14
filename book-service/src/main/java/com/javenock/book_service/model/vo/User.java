@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @ToString
-@Table(schema = "public", name = "users")
+@Table(schema = "library", name = "users")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable {
 

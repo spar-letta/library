@@ -32,6 +32,8 @@ public class BookRestControllerTests extends BookServiceApplicationTests {
         bookRequestDto.setAuthorIds(Collections.singleton(UUID.fromString("7a40fd66-36a6-4487-9509-e9b12a61bff9")));
 
         given()
+                .auth()
+                .oauth2(accessToken)
                 .contentType("application/json")
                 .body(bookRequestDto)
                 .post("/books")
@@ -42,6 +44,8 @@ public class BookRestControllerTests extends BookServiceApplicationTests {
     @Test
     public void getBook() {
         given()
+                .auth()
+                .oauth2(accessToken)
                 .queryParam("searchParam", "New Covent")
                 .queryParam("type", BookType.Trade_Books)
                 .queryParam("author", UUID.fromString("7a40fd66-36a6-4487-9509-e9b12a61bff9"))
@@ -62,6 +66,8 @@ public class BookRestControllerTests extends BookServiceApplicationTests {
     public void getAllBooksCsvImport() {
         batchJobService.processKitabuImport();
         given()
+                .auth()
+                .oauth2(accessToken)
                 .get("/books")
                 .then().log().all()
                 .statusCode(200)

@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      httpclient:
+        connect-timeout: 20000
+        response-timeout: 7s
+      routes:
+
+        - id: book-service
+          uri: lb://book-service
+          predicates:
+            - Path=/books/** , /book-service/v3/api-docs
+
+        - id: user-management-service
+          uri: lb://user-management-service
+          predicates:
+            - Path=/users/** , /user-management-service/v3/api-docs
+
+springdoc:
+  enable-native-support: true
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway Service
+        primaryName: API Gateway Service
+
+      - url: /book-service/v3/api-docs
+        name: Book Service
+        primaryName: Book Service
+
+      - url: /user-management-service/v3/api-docs
+        name: User Management Service
+        primaryName: User management Service
+
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/

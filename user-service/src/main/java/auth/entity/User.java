@@ -17,14 +17,16 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Builder
-@Table(name = "users", schema = "public")
+@Table(name = "users", schema = "library")
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLRestriction(value = "deleted = false")
+@ToString
 public class User extends AbstractAuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(BaseView.internalView.class)
     @Column(name = "id")
     private Long id;
 
@@ -45,7 +47,7 @@ public class User extends AbstractAuditableEntity implements UserDetails {
     private String userName;
 
     @Column(name = "password")
-    @JsonView({BaseView.UserDetailedView.class, BaseView.UserCreatedDetailedView.class, BaseView.UserProfileView.class})
+//    @JsonView({BaseView.UserDetailedView.class, BaseView.UserCreatedDetailedView.class, BaseView.UserProfileView.class})
     private String password;
 
     @Column(name = "contact_email")
@@ -74,10 +76,11 @@ public class User extends AbstractAuditableEntity implements UserDetails {
     private boolean changePassword;
 
     @JsonView({BaseView.UserDetailedView.class, BaseView.UserCreatedDetailedView.class, BaseView.UserProfileView.class})
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", schema = "public",
             joinColumns = @JoinColumn(name = "user_id_fk", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id_fk", referencedColumnName = "id"))
+    @Setter(AccessLevel.NONE)
     private List<Role> roles = new ArrayList<>();
 
     @Transient
@@ -100,7 +103,7 @@ public class User extends AbstractAuditableEntity implements UserDetails {
     public Collection<GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> listAuthorities = new ArrayList<GrantedAuthority>();
         this.getRoles().forEach(item -> {
-            item.getPrivileges().forEach(privileges -> listAuthorities.add(new SimpleGrantedAuthority(privileges.getName())));
+            item.getPrivilegeList().forEach(privileges -> listAuthorities.add(new SimpleGrantedAuthority(privileges.getName())));
         });
         return listAuthorities;
     }

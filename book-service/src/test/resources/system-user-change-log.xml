@@ -9,7 +9,7 @@
 
     <changeSet author="enock" id="1561172658474-1">
         <sql>
-           CREATE SCHEMA IF NOT EXISTS public;
+           CREATE SCHEMA IF NOT EXISTS library;
         </sql>
     </changeSet>
 
@@ -17,10 +17,10 @@
     <changeSet author="ADMIN (enock)" id="202409280950">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists schemaName="public" tableName="users"/>
+                <tableExists schemaName="library" tableName="users"/>
             </not>
         </preConditions>
-        <createTable schemaName="public" tableName="users">
+        <createTable schemaName="library" tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
             </column>

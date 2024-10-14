@@ -131,7 +131,6 @@ public class BookServiceImpl implements BookService {
            book.setDatePublished(kitabu.getDatePublished());
            if(!authors.isEmpty()) book.setAuthor(authors);
            Kitabu saved = bookRepository.save(book);
-           log.info("===================Saved book: {}", saved);
        }
     }
 
